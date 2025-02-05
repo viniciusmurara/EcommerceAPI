@@ -25,28 +25,23 @@ public class ProductController {
     public void save(@RequestBody ProductRequestDTO productData) {
         Product product = new Product(productData);
 
-        // Converter Base64 para arquivo (se necessário)
         if (productData.getImage() != null && !productData.getImage().isEmpty()) {
             try {
-                // Decodificar imagem em Base64
                 byte[] imageBytes = Base64.getDecoder().decode(productData.getImage().split(",")[1]);
 
-                // Definir diretório e nome do arquivo
                 String directoryPath = "src/main/resources/static/uploads/";
                 File directory = new File(directoryPath);
                 if (!directory.exists()) {
-                    directory.mkdirs(); // Cria o diretório se não existir
+                    directory.mkdirs();
                 }
 
                 String fileName = UUID.randomUUID().toString() + ".png";
                 String filePath = directoryPath + fileName;
 
-                // Salvar o arquivo no diretório
                 try (FileOutputStream fos = new FileOutputStream(filePath)) {
                     fos.write(imageBytes);
                 }
 
-                // Definir o caminho do arquivo salvo no produto
                 product.setImage(fileName);
             } catch (Exception e) {
                 throw new RuntimeException("Erro ao salvar imagem", e);
